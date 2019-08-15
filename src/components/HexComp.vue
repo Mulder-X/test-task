@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <label for="hexNum">Input some color using hex code</label>
+    <p>Input some hex code to invert</p>
 
     <textarea
       class="form-control"
@@ -9,12 +9,8 @@
       placeholder="Example: #fafafa"
       cols="30"
       rows="5"
-      @blur="$v.hexNumber.$touch()"
+      @input="$v.hexNumber.$touch()"
     ></textarea>
-
-    <div class="invalid-feedback" v-if="!$v.hexNumber.$required">
-      Hex is required
-    </div>
 
     <div class="invalid-feedback" v-if="!$v.hexNumber.$minLength">
       Hex code must be at least 3 letters
@@ -23,7 +19,6 @@
     <button class="btn btn-primary" :disabled="$v.$invalid" @click="invertHex">
       Invert
     </button>
-
     <div class="row">
       <div class="col">
         <ul>
@@ -58,6 +53,8 @@ export default {
       console.log(this.resultArray);
     },
     invertHexCode(hexnum) {
+      if (hexnum[0] == "#") hexnum = hexnum.substring(1);
+      console.log(hexnum);
       if (hexnum.length === 3) {
         hexnum = hexnum
           .split("")
@@ -65,7 +62,15 @@ export default {
             return hex + hex;
           })
           .join("");
+      } else if (hexnum.length === 4) {
+        hexnum = hexnum
+          .split("")
+          .map(function(hex) {
+            return hex + hex;
+          })
+          .join("");
       }
+      console.log(hexnum);
       hexnum = hexnum.toUpperCase();
       let splitnum = hexnum.split("");
       let resultnum = "";
@@ -79,33 +84,41 @@ export default {
       complexnum.F = "0";
 
       let index = 0;
-      if (hexnum[0] == "#") index = 1;
-      else index = 0;
+      if (hexnum[0] == "#") {
+        index = 1;
+      } else {
+        resultnum += "#";
+      }
 
-      resultnum += "#";
       for (let i = index; i < hexnum.length; i++) {
-        if (!isNaN(splitnum[i])) {
-          resultnum += simplenum[splitnum[i]];
-        } else if (complexnum[splitnum[i]]) {
-          resultnum += complexnum[splitnum[i]];
+        if (i > 5) {
+          resultnum += splitnum[i];
         } else {
-          return false;
+          if (!isNaN(splitnum[i])) {
+            resultnum += simplenum[splitnum[i]];
+          } else if (complexnum[splitnum[i]]) {
+            resultnum += complexnum[splitnum[i]];
+          } else {
+            return false;
+          }
         }
       }
       return resultnum;
     },
-    isValidHex(color) {
-      if (!color || typeof color !== "string") return false;
+    isValidHex(code) {
+      if (!code || typeof code !== "string") return false;
       // Validate hex values
-      if (color.substring(0, 1) === "#") color = color.substring(1);
+      if (code.substring(0, 1) === "#") code = code.substring(1);
 
-      switch (color.length) {
+      switch (code.length) {
         case 3:
-          return /^[0-9A-F]{3}$/i.test(color);
+          return /^[0-9A-F]{3}$/i.test(code);
+        case 4:
+          return /^[0-9A-F]{4}$/i.test(code);
         case 6:
-          return /^[0-9A-F]{6}$/i.test(color);
+          return /^[0-9A-F]{6}$/i.test(code);
         case 8:
-          return /^[0-9A-F]{8}$/i.test(color);
+          return /^[0-9A-F]{8}$/i.test(code);
         default:
           return false;
       }
@@ -134,6 +147,9 @@ export default {
   height: 100px;
   border-radius: 50%;
   border: 1px solid black;
+  text-align: center;
+  align-self: center;
+  font-size: 14px;
 }
 li {
   list-style-type: none;
