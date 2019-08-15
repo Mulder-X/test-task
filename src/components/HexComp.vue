@@ -4,7 +4,7 @@
 
     <textarea
       class="form-control"
-      :class="{'is-invalid': $v.hexNumber.$error}"
+      :class="{ 'is-invalid': $v.hexNumber.$error }"
       v-model="hexNumber"
       placeholder="Example: #fafafa"
       cols="30"
@@ -12,20 +12,23 @@
       @blur="$v.hexNumber.$touch()"
     ></textarea>
 
-    <div class="invalid-feedback" v-if="!$v.hexNumber.$required">Hex is required</div>
+    <div class="invalid-feedback" v-if="!$v.hexNumber.$required">
+      Hex is required
+    </div>
 
-    <div
-      class="invalid-feedback"
-      v-if="!$v.hexNumber.$minLength"
-    >Hex code must be at least 3 letters</div>
+    <div class="invalid-feedback" v-if="!$v.hexNumber.$minLength">
+      Hex code must be at least 3 letters
+    </div>
 
-    <button class="btn btn-primary" :disabled="$v.$invalid" @click="invertHex">Invert</button>
+    <button class="btn btn-primary" :disabled="$v.$invalid" @click="invertHex">
+      Invert
+    </button>
 
     <div class="row">
       <div class="col">
         <ul>
           <li v-for="(color, index) in resultArray" :key="index">
-            <div :style="{'background-color': color}" class="colored"></div>
+            <div :style="{ 'background-color': color }" class="colored"></div>
           </li>
         </ul>
       </div>
@@ -106,7 +109,6 @@ export default {
         default:
           return false;
       }
-      return false;
     }
   },
   validations: {
